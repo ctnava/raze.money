@@ -1,0 +1,32 @@
+:sparkling_heart:  **Join L3gendary DAO!** :sparkling_heart: 
+----------------------
+:dart:  **Our Objectives** :dart: 
+We seek to create an alliance of queer Web3 enthusiasts and currently handle it in 3 ways:
+```
+- to inform the LGBTQA+ community of the benefits and opportunities of Web3
+- providing the basis of a fellowship composed of queer & allying professionals
+- the formation of a decentralized crowdfunding dapp; catering towards marginalized communities
+```
+----------------------
+:tools:  **Our Hackathon Project** :tools: 
+For this hackathon, we are launching **raze.money**!
+
+It will be a decentralized fundraising platform, created by L3gendary DAO, that assists with the delivery of liquidity of those who need it most and awards personalized impact certificate NFTs to contributors. Marginalized communities have come to rely on crowdfunding platforms, such as GoFundMe, for the individualized financing of needs, such as: medical treatment, legal consultation, and small ventures like start-ups or collectives. We aim to broaden this reach with DeFi, through Web3, in order to introduce a transparent, grassroots alternative.
+
+Anyone can start a fundraiser and share it with anyone, anywhere and verification (designated by the presence of our signature green gem) is completely optional. However, the featured section of our platform is exclusively reserved for verified campaigns. By allowing unverified campaigns, we are extending our reach to countries where LGBTQA+ activities have been made illegal.
+----------------------
+:technologist:  **Our Team** :woman_technologist: 
+We are currently in search of **generalizing specialists** that are comfortable with **backend** && **frontend**. Our ideal team consists of communicative developers (that understand blockchain, frontend, & backend) who can reliably support & respect each other as they collectively work towards our common goal. If you are **passionate** about our cause and can offer the skills needed, please reach out!
+```
+@onioonio#0483    || Product Manager
+@cici_#3434       || UI/UX & Visual Designer
+@CAT6#2699        || Fullstack (Smart Contract Specialist)
+TBD               || Fullstack (Frontend Specialist)
+TBD               || Fullstack (Backend Specialist)
+```
+----------------------
+:beers:  **Our Community** :beers: 
+Are you an ally or LGBTQA+ individual that can't help us out with HackFS? We are just getting started. Feel free to join our community and attend our weekly meetings! 
+https://discord.gg/yAnrGhwV
+https://twitter.com/L3GENDARY_dao
+https://www.instagram.com/l3gendary_dao/
