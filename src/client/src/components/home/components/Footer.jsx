@@ -28,7 +28,10 @@ function Footer() {
             </a>
             <hr />
             <p>
-              <span>© Copyright CyAaron Tai Nava || Icons courtesy of  </span>
+              <span>
+                RAZE.MONEY Copyright © 2022 L3GENDARY DAO - All Rights Reserved.
+                || Icons courtesy of{" "}
+              </span>
               <a href="https://fontawesome.com/" class="footer-link">
                 FontAwesome
               </a>

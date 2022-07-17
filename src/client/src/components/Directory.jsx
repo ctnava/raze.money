@@ -3,7 +3,7 @@ import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import scannerUrl from "./dapps/utils/scanner";
 
 // const homeUrl = "http://localhost:4002/";
-const homeUrl = "https://deaddrop-dapp-alpha.herokuapp.com";
+const homeUrl = "https://www.legendary.lgbt/";
 function Directory(props) {
   let account = props.client.account;
   let web3Handler = props.web3Handler;
@@ -19,7 +19,7 @@ function Directory(props) {
             className=""
             alt="logo192"
           />
-          &nbsp; Hemlock Street
+          &nbsp; L3GENDARY DAO
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
@@ -30,8 +30,8 @@ function Directory(props) {
 
             {
               hasWeb3 && (
-                <Nav.Link as={Link} to={hasWeb3 ? "/DeadDrop" : "/"}>
-                  DeadDrop
+                <Nav.Link as={Link} to={hasWeb3 ? "/raze" : "/"}>
+                  Raze.Money
                 </Nav.Link>
               ) /*Contains Dapps*/
             }
