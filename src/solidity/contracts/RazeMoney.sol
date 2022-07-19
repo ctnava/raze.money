@@ -11,13 +11,13 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     string public constant description = "Contribution Receipt & Campaign Database Contract";
 
     address public router;  // liquidity router
-	function setRouter(address _router) 	public onlyOwner { router = _router; }
+	function defineRouter(address _router) 	public onlyOwner { router = _router; }
 
     address public minter;  // payment processor
-	function setMinter(address _minter) 	public onlyOwner { minter = _minter; }
+	function defineMinter(address _minter) 	public onlyOwner { minter = _minter; }
 
     address public oracle;
-	function setOracle(address _oracle) 	public onlyOwner { oracle = _oracle; }
+	function defineOracle(address _oracle) 	public onlyOwner { oracle = _oracle; }
 
     constructor() ERC721("Raze.Money by L3gendary DAO", "#RAZE") {}
 
@@ -141,8 +141,6 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     // Burn Function?
 
     // Admin Only
-    function defineRouter(address _router) public onlyOwner { router = _router; }
-    function defineMinter(address _minter) public onlyOwner { minter = _minter; }
     // function campaignCloseout() public onlyOwner {} // FORCES ALL CAMPAIGNS TO CLOSEOUT & SHUTDOWN THE CONTRACT
 }
 

@@ -11,22 +11,22 @@ contract RazeFunder is Ownable {
 	string public constant description = 'NFT Minter & Metrics Recorder';
 
 	address public teamWallet;
-	function setTeamWallet(address _wallet)	public onlyOwner { teamWallet = _wallet; }
+	function defineTeamWallet(address _wallet)	public onlyOwner { teamWallet = _wallet; }
 
 	address public router;
-	function setRouter(address _router) 	public onlyOwner { router = _router; }
+	function defineRouter(address _router) 	public onlyOwner { router = _router; }
 
 	address public records;
-	function setRecords(address _records) 	public onlyOwner { records = _records; }
+	function defineRecords(address _records) 	public onlyOwner { records = _records; }
 
 	address public oracle;
-	function setOracle(address _oracle) 	public onlyOwner { oracle = _oracle; }
+	function defineOracle(address _oracle) 	public onlyOwner { oracle = _oracle; }
 
 	constructor(address _wallet, address _router, address _records, address _oracle) { 
-		setTeamWallet(_wallet); 
-		setRouter(_router);
-		setRecords(_records);
-		setOracle(_oracle);
+		defineTeamWallet(_wallet); 
+		defineRouter(_router);
+		defineRecords(_records);
+		defineOracle(_oracle);
 	}
 
 	// plan to reduce this to 0.1% as the project grows

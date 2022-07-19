@@ -36,11 +36,21 @@ interface IRazeMoney        {
     // Admin Only
     function defineRouter(address _router) external;
     function defineMinter(address _minter) external;
+    function defineOracle(address _minter) external;
+    // function campaignCloseout() external;
+    // burn function?
 }
 
 
-interface IRazeFunder       { 
+interface IRazeFunder       {
+    function contribute(uint campaignId) external payable;
+    // IRazeMoney Exclusive 
     function toPennies(uint amount) external view returns(uint pennies);
+    // Admin Only
+    function defineMinter(address _minter) external;
+    function defineRecords(address _records) external;
+    function defineOracle(address _minter) external;
+    function defineTeamWallet(address _wallet) external;
 }
 
 
