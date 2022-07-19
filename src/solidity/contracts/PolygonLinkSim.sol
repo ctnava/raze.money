@@ -13,10 +13,10 @@ contract PolygonLinkSim is AggregatorV3Interface {
     function getRoundData(uint80 _roundId)  public pure override returns(uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound) {
         roundId = _roundId; startedAt = 2; updatedAt = 3; answeredInRound = 4;
         _roundId++;
-        answer = 2 * (10 ** 8); // $2
+        answer = 89 * (10 ** 6); // $0.89
     }
     function latestRoundData()              public pure override returns(uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound) {
         roundId = 1; startedAt = 2; updatedAt = 3; answeredInRound = 4;
-        answer = 2 * (10 ** 8); // $2
+        answer = 89 * (10 ** 6); // $0.89
     }
 }

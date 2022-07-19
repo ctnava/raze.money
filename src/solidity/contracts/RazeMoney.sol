@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Contract by CAT6#2699
 pragma solidity ^0.8.0;
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./RazeInterfaces.sol";
@@ -15,6 +16,9 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     address public minter;  // payment processor
 	function setMinter(address _minter) 	public onlyOwner { minter = _minter; }
 
+    address public oracle;
+	function setOracle(address _oracle) 	public onlyOwner { oracle = _oracle; }
+
     constructor() ERC721("Raze.Money by L3gendary DAO", "#RAZE") {}
 
     modifier RouterOnly() { require(msg.sender == router, "Router Only");_; }
@@ -23,6 +27,12 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     // contains a record of campaigns to contribute towards
     mapping(uint => Campaign) private campaigns;
     uint public numCampaigns;
+
+    // displays how many pennies have been accrued (truncated to the nearest whole)
+	function accruedAmount(uint campaignId) public view returns(uint pennies) {
+        uint amount = IRazeFunder(minter).toPennies(campaigns[campaignId].goal);
+        pennies = amount / (10**8);
+    }
 
     // creates a campaign record
     function registerCampaign(uint recipientId, uint goal) public {
@@ -37,21 +47,20 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
         emit CampaignOpened(numCampaigns, router, recipientId, recipient, goal);
     }
 
-    function liquidateCampaign(uint campaignId) internal {
-        // DECIDE WHERE THE FUNDS ARE HELD (Probably the router)
-    }
-
     // closes a campaign and cashes out the funds
     function endCampaign(uint campaignId) public {
         Campaign memory campaign = campaigns[campaignId];
+        address recipient = ERC721(campaign.router).ownerOf(campaign.recipientId);
 
         // disallow double cashouts
         require(campaign.open, "Closed Campaign");
+        // disallow trolls
+        require(msg.sender == recipient, "Unauthorized");
 
-        liquidateCampaign(campaignId);
+        IRazeRouter(campaign.router).liquidateCampaign(campaignId, recipient);
         campaigns[campaignId].open = false;
 
-        emit CampaignClosed(campaignId, ERC721(campaign.router).ownerOf(campaign.recipientId), campaign.state);
+        emit CampaignClosed(campaignId, recipient, campaign.state);
     }
 
     modifier validCampaign(uint campaignId)     {   
@@ -106,7 +115,7 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
 
         data.usd += usd;
         data.gas += gas;
-        funding.state += usd;
+        funding.state += gas;
 
         emit ContributionMade(campaignId, tokenId, usd, gas);
     }

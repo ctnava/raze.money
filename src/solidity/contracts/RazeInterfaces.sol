@@ -14,9 +14,10 @@ interface IRazeMoney        {
         address router;     // ERC721(router)
         uint recipientId;   // address recipient = ERC721(router).ownerOf(recipientId)
         uint goal;          // USD
-        uint state;         // USD
+        uint state;         // gas
         bool open;          // (un)claimed
     }
+    function accruedAmount(uint campaignId) external view returns(uint pennies);
     function registerCampaign(uint recipientId, uint goal) external;
     function endCampaign(uint campaignId) external;
 
@@ -39,10 +40,17 @@ interface IRazeMoney        {
 
 
 interface IRazeFunder       { 
-    function flipRate() external view returns(uint tokensPerUnit); 
+    function toPennies(uint amount) external view returns(uint pennies);
 }
 
 
 interface IRazeRouter       { 
-    function flipRate() external view returns(uint tokensPerUnit); 
+    event Liquidation(address recipient, uint amount, uint campaignId);
+    // IRazeFunder Exclusive
+    function deposit(uint campaignId) external payable; 
+    // IRazeMoney Exclusive
+    function liquidateCampaign(uint campaignId, address recipient) external;
+    // Admin Only
+    function defineMinter(address _minter) external;
+    function defineRecords(address _records) external;
 }

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Contract by CAT6#2699
 pragma solidity ^0.8.0;
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./RazeInterfaces.sol";
-import "./RazeMoney.sol";
 
 // Payment Processor & Coordination Contract
 contract RazeFunder is Ownable {
@@ -29,11 +29,24 @@ contract RazeFunder is Ownable {
 		setOracle(_oracle);
 	}
 
-	uint teamCut = 5; // 0.5% === 5/1000
+	// plan to reduce this to 0.1% as the project grows
+	uint teamCut = 10; // 1% === 10/1000
+
+	function toPennies(uint amount) public view returns(uint pennies) {
+        require(msg.sender == records, "Not Authorized");
+		AggregatorV3Interface pricefeed = AggregatorV3Interface(oracle);
+        (,int priceInt,,,) = pricefeed.latestRoundData();
+        uint price = uint(priceInt);
+        uint raw = amount * price;
+        pennies = raw / (10**16);
+    }
 	
 	function contribute(uint campaignId) external payable {
-		// add tip amount & route to wallet
-		uint penniesUsd = 0; // calculate me
+		uint penniesUsd = toPennies(msg.value) / (10**8);
+		
+		// minimum contribution $10
+		require(penniesUsd >= 1000, "Contribution <$10");
+
 		IRazeMoney record = IRazeMoney(records);
 		uint receiptId = record.isSupporter(campaignId, msg.sender);
 		if (receiptId == 0) {
@@ -41,6 +54,12 @@ contract RazeFunder is Ownable {
 		} else {
 			record.updateReceipt(receiptId, penniesUsd, msg.value);
 		}
-		// send to router
+
+		uint cut = (msg.value* teamCut) / 1000;
+		bool sent = payable(teamWallet).send(cut);
+        require(sent, "Failed to send Ether");
+
+		uint remainder = msg.value - cut;
+		IRazeRouter(router).deposit{value:remainder}(campaignId);
 	}
 }
