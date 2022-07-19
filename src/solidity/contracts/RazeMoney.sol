@@ -124,9 +124,12 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
         updateReceipt(tokenId, usd, gas);
     }
 
+    // Burn Function?
+
     // Admin Only
     function defineRouter(address _router) public onlyOwner { router = _router; }
     function defineMinter(address _minter) public onlyOwner { minter = _minter; }
+    // function campaignCloseout() public onlyOwner {} // FORCES ALL CAMPAIGNS TO CLOSEOUT & SHUTDOWN THE CONTRACT
 }
 
 /* 
