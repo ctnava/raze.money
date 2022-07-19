@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 // Simple, Sloppy, Profit & Receivables Contract
 // replacable/ not permanent
+// deployer gets all of the NFTs to distribute
 
 // ("L3gendary DAO - RAZE Wallet", "L3-RAZE")
 contract TeamWallet is ERC721 {
