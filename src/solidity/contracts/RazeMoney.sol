@@ -7,11 +7,16 @@ import "./RazeInterfaces.sol";
 
 // non-refundable contribution tracker
 contract RazeMoney is Ownable, ERC721, IRazeMoney {
-    constructor() ERC721("Raze.Money by L3gendary DAO", "#RAZE") {}
     string public constant description = "Contribution Receipt & Campaign Database Contract";
 
     address public router;  // liquidity router
+	function setRouter(address _router) 	public onlyOwner { router = _router; }
+
     address public minter;  // payment processor
+	function setMinter(address _minter) 	public onlyOwner { minter = _minter; }
+
+    constructor() ERC721("Raze.Money by L3gendary DAO", "#RAZE") {}
+
     modifier RouterOnly() { require(msg.sender == router, "Router Only");_; }
     modifier MinterOnly() { require(msg.sender == router, "Minter Only");_; }
 

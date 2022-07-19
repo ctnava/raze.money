@@ -9,6 +9,9 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 // ("L3gendary DAO - RAZE Wallet", "L3-RAZE")
 contract TeamWallet is ERC721 {
+    string public constant description = 'Team NFT Multi-Sig Wallet';
+    uint numTokens = 5;
+    
     constructor(string memory nameOf, string memory symbolOf) ERC721(nameOf, symbolOf) {
         _mint(msg.sender, 1);
         _mint(msg.sender, 2);
@@ -16,8 +19,6 @@ contract TeamWallet is ERC721 {
         _mint(msg.sender, 4);
         _mint(msg.sender, 5);
     }
-    string public constant description = 'Team NFT Multi-Sig Wallet';
-    uint numTokens = 5;
 
     struct Proposal {
         address destination;
