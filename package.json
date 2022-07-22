@@ -80,6 +80,7 @@
     "deploy": "npx hardhat run src/solidity/scripts/deploy.js --network localhost",
     "networks": "node utils/showNetworks.js",
     "deployTo": "npx hardhat run src/solidity/scripts/deploy.js --network",
+    "qa": "npx hardhat test",
     "api": "nodemon src/api/app",
     "client": "react-scripts start",
     "build": "react-scripts build",
