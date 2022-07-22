@@ -9,6 +9,16 @@ import "./RazeInterfaces.sol";
 contract RazeRouter is Ownable, ERC721, IRazeRouter {
     string public constant description = 'Campaign Liquidity Router';
 
+    string baseURI;
+
+    function _baseURI() internal override view returns(string memory){
+        return baseURI;
+    }
+
+    function setBase(string memory uri) public onlyOwner {
+        baseURI = uri;
+    }
+
     address public minter;
 	function defineMinter(address _minter) 	public onlyOwner { minter = _minter; }
 
@@ -17,11 +27,28 @@ contract RazeRouter is Ownable, ERC721, IRazeRouter {
     
     mapping(uint => uint) public campaignBalance;
 
-    constructor(address _records) ERC721("Raze Router by L3gendary DAO", "R&R") {
+    uint numBeneficiaries;
+    mapping(uint => bool) public verified;
+
+    constructor(address _records, string memory uri) ERC721("Raze Router by L3gendary DAO", "R&R") {
         records = _records;
+        setBase(uri);
+    }
+
+    function toggleVerification(uint id) public onlyOwner {
+        verified[id] = !verified[id];
     }
 
     // need mint functions
+    function registerBeneficiary(address beneficiary) public onlyOwner {
+        // prevents duplicate registration
+        require(balanceOf(beneficiary) == 0, "Already Minted");
+
+        numBeneficiaries++;
+        _mint(beneficiary, numBeneficiaries);
+
+        emit BeneficiaryRegistered(beneficiary, numBeneficiaries);
+    }
 
     function deposit(uint campaignId) public payable {
         require(msg.sender == minter, "Minter Only");

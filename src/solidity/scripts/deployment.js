@@ -2,10 +2,8 @@ const fs = require("fs");
 const { ethers, artifacts } = require("hardhat");
 const { constructorArgs } = require("./utils/constructorArgs");
 
-
 async function runDeployment(contractName, chainId) {
   const [deployer] = await ethers.getSigners();
-  
 
   // deploy contracts here:
   const NewFactory = await ethers.getContractFactory(contractName);
@@ -17,34 +15,40 @@ async function runDeployment(contractName, chainId) {
   return NewContract;
 }
 
-
 function saveFrontendFiles(contract, name, chainId) {
   function writeFiles(pathToRoot, label) {
-    if (fs.existsSync(pathToRoot)) { 
+    if (fs.existsSync(pathToRoot)) {
       const pathToData = `${pathToRoot}/data/${chainId}`;
       const missingFolder = !fs.existsSync(pathToData);
-      if (missingFolder) fs.mkdirSync(pathToData, { recursive: true }); 
+      if (missingFolder) fs.mkdirSync(pathToData, { recursive: true });
 
       const pathToAddress = `${pathToData}/${name}-address.json`;
-      const addressCache = JSON.stringify({ address: contract.address }, undefined, 2);
+      const addressCache = JSON.stringify(
+        { address: contract.address },
+        undefined,
+        2
+      );
       fs.writeFileSync(pathToAddress, addressCache);
 
       const pathToArtifact = `${pathToData}/${name}.json`;
-      const artifactCache = JSON.stringify(artifacts.readArtifactSync(name), null, 2);
+      const artifactCache = JSON.stringify(
+        artifacts.readArtifactSync(name),
+        null,
+        2
+      );
       fs.writeFileSync(pathToArtifact, artifactCache);
-      
+
       console.log(`${label}: ${name} artifacts saved || chain:${chainId}`);
     }
   }
-  
+
   const isAggregate = fs.existsSync("./src/solidity");
-  writeFiles("./", (isAggregate ? "HSCombined" : "HSContracts"));
+  writeFiles("./", isAggregate ? "Combined" : "Contracts");
   if (isAggregate) {
-    writeFiles("./src/solidity", "HSContracts");
-    writeFiles("./src/client/src", "HSDappClient");
-    writeFiles("./src/api", "HSApi");
+    writeFiles("./src/solidity", "Contracts");
+    writeFiles("./src/client/src", "DappClient");
+    writeFiles("./src/api", "Api");
   }
 }
-
 
 module.exports = { runDeployment, saveFrontendFiles };

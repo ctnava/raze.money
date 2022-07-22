@@ -9,6 +9,16 @@ import "./RazeInterfaces.sol";
 // non-refundable contribution tracker
 contract RazeMoney is Ownable, ERC721, IRazeMoney {
     string public constant description = "Contribution Receipt & Campaign Database Contract";
+    
+    string baseURI;
+
+    function _baseURI() internal override view returns(string memory){
+        return baseURI;
+    }
+
+    function setBase(string memory uri) public onlyOwner {
+        baseURI = uri;
+    }
 
     address public router;  // liquidity router
 	function defineRouter(address _router) 	public onlyOwner { router = _router; }
@@ -19,7 +29,9 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     address public oracle;
 	function defineOracle(address _oracle) 	public onlyOwner { oracle = _oracle; }
 
-    constructor() ERC721("Raze.Money by L3gendary DAO", "#RAZE") {}
+    constructor(string memory uri) ERC721("Raze.Money by L3gendary DAO", "#RAZE") {
+        setBase(uri);
+    }
 
     modifier RouterOnly() { require(msg.sender == router, "Router Only");_; }
     modifier MinterOnly() { require(msg.sender == router, "Minter Only");_; }

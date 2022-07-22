@@ -55,6 +55,7 @@ interface IRazeFunder       {
 
 
 interface IRazeRouter       { 
+    event BeneficiaryRegistered(address beneficiary, uint id);
     event Liquidation(address recipient, uint amount, uint campaignId);
     // IRazeFunder Exclusive
     function deposit(uint campaignId) external payable; 
