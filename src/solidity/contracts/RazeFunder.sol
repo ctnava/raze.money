@@ -6,33 +6,25 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./RazeInterfaces.sol";
 
 // Payment Processor & Coordination Contract
-contract RazeFunder is Ownable {
+contract RazeFunder is Ownable, IRazeFunder {
 	string public constant name = 'Raze Funder by L3gendary DAO';
 	string public constant description = 'NFT Minter & Metrics Recorder';
 
-	address public teamWallet;
-	function defineTeamWallet(address _wallet) public onlyOwner { teamWallet = _wallet; }
+	address public teamWallet;	// TeamWallet.sol
+	function defineTeamWallet(address _wallet) public override onlyOwner { teamWallet = _wallet; }
+	address public router;		// RazeRouter.sol
+	function defineRouter(address _router) public override onlyOwner { router = _router; }
+	address public records;		// RazeMoney.sol
+	function defineRecords(address _records) public override onlyOwner { records = _records; }
+	address public oracle;		// AggregatorV3Interface.sol
+	function defineOracle(address _oracle) public override onlyOwner { oracle = _oracle; }
 
-	address public router;
-	function defineRouter(address _router) public onlyOwner { router = _router; }
-
-	address public records;
-	function defineRecords(address _records) public onlyOwner { records = _records; }
-
-	address public oracle;
-	function defineOracle(address _oracle) public onlyOwner { oracle = _oracle; }
-
-	constructor(address _wallet, address _router, address _records, address _oracle) { 
-		defineTeamWallet(_wallet);
-		defineRouter(_router);
-		defineRecords(_records);
-		defineOracle(_oracle);
-	}
+	constructor() {}
 
 	// plan to reduce this to 0.1% as the project grows
 	uint teamCut = 10; // 1% === 10/1000
 
-	function toPennies(uint amount) public view returns(uint pennies) {
+	function toPennies(uint amount) public view override returns(uint pennies) {
         require(msg.sender == records, "Not Authorized");
 		AggregatorV3Interface pricefeed = AggregatorV3Interface(oracle);
         (,int priceInt,,,) = pricefeed.latestRoundData();
@@ -41,7 +33,7 @@ contract RazeFunder is Ownable {
         pennies = raw / (10**16);
     }
 	
-	function contribute(uint campaignId) external payable {
+	function contribute(uint campaignId) public payable override {
 		uint penniesUsd = toPennies(msg.value) / (10**8);
 		
 		// minimum contribution $10

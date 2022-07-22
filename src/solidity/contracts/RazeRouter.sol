@@ -7,40 +7,29 @@ import "./RazeInterfaces.sol";
 
 // Payment Dissemination Contract
 contract RazeRouter is Ownable, ERC721, IRazeRouter {
+
     string public constant description = 'Campaign Liquidity Router';
 
-    string baseURI;
-
-    function _baseURI() internal override view returns(string memory){
-        return baseURI;
-    }
-
-    function setBase(string memory uri) public onlyOwner {
-        baseURI = uri;
-    }
-
-    address public minter;
-	function defineMinter(address _minter) 	public onlyOwner { minter = _minter; }
-
-    address public records;
-	function defineRecords(address _records) 	public onlyOwner { records = _records; }
+    address public minter;      // RazeFunder.sol
+	function defineMinter(address _minter) public override onlyOwner { minter = _minter; }
+    address public records;     // RazeMoney.sol
+	function defineRecords(address _records) public override onlyOwner { records = _records; }
     
-    mapping(uint => uint) public campaignBalance;
+    string public baseURI;      // Hardhat REST x IPFS
+    function _baseURI() internal override view returns(string memory) { return baseURI; }
+    function setBase(string memory uri) public override onlyOwner { baseURI = uri; }
 
-    uint numBeneficiaries;
-    mapping(uint => bool) public verified;
-
-    constructor(address _records, string memory uri) ERC721("Raze Router by L3gendary DAO", "R&R") {
-        records = _records;
+    constructor(string memory uri) ERC721("Raze Router by L3gendary DAO", "R&R") {
         setBase(uri);
     }
-
-    function toggleVerification(uint id) public onlyOwner {
-        verified[id] = !verified[id];
-    }
+    
+    function toggleVerification(uint id) public override onlyOwner { verified[id] = !verified[id]; }
+    mapping(uint => uint) public campaignBalance;
+    mapping(uint => bool) public verified;
+    uint numBeneficiaries;
 
     // need mint functions
-    function registerBeneficiary(address beneficiary) public onlyOwner {
+    function registerBeneficiary(address beneficiary) public override onlyOwner {
         // prevents duplicate registration
         require(balanceOf(beneficiary) == 0, "Already Minted");
 
@@ -50,12 +39,12 @@ contract RazeRouter is Ownable, ERC721, IRazeRouter {
         emit BeneficiaryRegistered(beneficiary, numBeneficiaries);
     }
 
-    function deposit(uint campaignId) public payable {
+    function deposit(uint campaignId) public payable override {
         require(msg.sender == minter, "Minter Only");
         campaignBalance[campaignId] += msg.value;
     }
 
-    function liquidateCampaign(uint campaignId, address recipient) public {
+    function liquidateCampaign(uint campaignId, address recipient) public override {
         require(msg.sender == records, "Records Only");
 
         uint amount = campaignBalance[campaignId];

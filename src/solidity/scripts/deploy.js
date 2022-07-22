@@ -12,6 +12,10 @@ async function deployAll() {
   );
   console.log(`Account balance: ${(await deployer.getBalance()).toString()}\n`);
 
+  // deploy wallet
+  const TeamWallet = await runDeployment("TeamWallet", chainId);
+
+  // deploy simulator if necessary
   let PolygonLinkSim;
   const isDev = chainId === 31337 || chainId === 1337;
   if (isDev) PolygonLinkSim = await runDeployment("PolygonLinkSim", chainId);
@@ -19,20 +23,24 @@ async function deployAll() {
   const oracle =
     plsSet === true ? PolygonLinkSim.address : oracles[chainId.toString()];
 
-  const DStor = await runDeployment("DStor", chainId);
-  const FissionEngineFactory = await ethers.getContractFactory("FissionEngine");
-  console.log("oracle", oracle);
-  const FissionEngine = await FissionEngineFactory.deploy(
-    oracle,
-    DStor.address
-  );
-  console.log(`\nFissionEngine deployed to ${FissionEngine.address}`);
-  console.log(`Account balance: ${(await deployer.getBalance()).toString()}`);
-  saveFrontendFiles(FissionEngine, "FissionEngine", chainId);
+  // deploy & configure core contracts
+  const RazeFunder = await runDeployment("RazeFunder", chainId);
+  const RazeRouter = await runDeployment("RazeRouter", chainId);
+  const RazeMoney = await runDeployment("RazeMoney", chainId);
 
-  await DStor.setFission(FissionEngine.address);
-  console.log("Fission Engine Linked to DStor");
-  console.log(`Account balance: ${(await deployer.getBalance()).toString()}\n`);
+  // initialize Payments
+  await RazeFunder.defineTeamWallet(TeamWallet.address);
+  await RazeFunder.defineRouter(RazeRouter.address);
+  await RazeFunder.defineRecords(RazeMoney.address);
+  await RazeFunder.defineOracle(oracle);
+
+  // initialize Router
+  await RazeRouter.defineMinter(RazeFunder.address);
+  await RazeRouter.defineRecords(RazeMoney.address);
+
+  // initialize Records
+  await RazeMoney.defineRouter(RazeRouter.address);
+  await RazeMoney.defineMinter(RazeFunder.address);
 }
 
 deployAll();

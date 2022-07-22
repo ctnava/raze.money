@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // replacable/ not permanent
 // deployer gets all of the NFTs to distribute
 
-// ("L3gendary DAO - RAZE Wallet", "L3-RAZE")
 contract TeamWallet is ERC721 {
     string public constant description = 'Team NFT Multi-Sig Wallet';
     uint numTokens = 5;

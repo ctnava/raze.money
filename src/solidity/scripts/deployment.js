@@ -2,12 +2,13 @@ const fs = require("fs");
 const { ethers, artifacts } = require("hardhat");
 const { constructorArgs } = require("./utils/constructorArgs");
 
-async function runDeployment(contractName, chainId) {
+async function runDeployment(contractName, chainId, args = false) {
+  let arguments = args ? args : [...constructorArgs[contractName]];
   const [deployer] = await ethers.getSigners();
 
   // deploy contracts here:
   const NewFactory = await ethers.getContractFactory(contractName);
-  const NewContract = await NewFactory.deploy(...constructorArgs[contractName]);
+  const NewContract = await NewFactory.deploy(...arguments);
   console.log(`\n${contractName} deployed to ${NewContract.address}`);
   console.log(`Account balance: ${(await deployer.getBalance()).toString()}`);
   // For each contract, pass the deployed contract and name to this function to save a copy of the contract ABI and address to the front end.
