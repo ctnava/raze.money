@@ -1,6 +1,5 @@
 function routeServices(app) {
-    require("./deaddrop/routes.js").routeServices(app);
+  require("./raze/routes.js").routeServices(app);
 }
 
-
-module.exports = {routeServices};
+module.exports = { routeServices };
