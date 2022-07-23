@@ -1,5 +1,4 @@
 /* eslint-disable jest/valid-expect */
-const { ethers } = require("hardhat");
 const { expect } = require("chai");
 const { constructorArgs } = require("../scripts/utils/constructorArgs");
 
