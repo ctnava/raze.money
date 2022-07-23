@@ -1,6 +1,5 @@
-const { runDeployment, saveFrontendFiles } = require("./deployment");
+const { runDeployment } = require("./deployment");
 const hre = require("hardhat");
-const ethers = hre.ethers;
 
 const oracles = require("./utils/oracles");
 async function deployAll() {

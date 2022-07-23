@@ -7,6 +7,7 @@ const { balance } = require("../utils/onchain.js");
 describe("Ecosystem", () => {
   let deployer, members, otherMembers, outsiders, otherClients;
   let PolygonLinkSim, TeamWallet, RazeRouter, RazeFunder, RazeMoney;
+  let tx;
 
   beforeEach(async () => {
     // Get Signers
@@ -130,6 +131,8 @@ describe("Ecosystem", () => {
     });
 
     it("Should allow beneficiaries to start a campaign", async () => {
+      expect(await RazeRouter.numBeneficiaries()).to.equal(0);
+
       await RazeRouter.connect(deployer).registerBeneficiary(
         outsiders[0].address
       );
@@ -150,72 +153,100 @@ describe("Ecosystem", () => {
     });
   });
 
-  async function contributionSetup() {
+  async function registerBeneficiaries() {
     await RazeRouter.connect(deployer).registerBeneficiary(
       outsiders[0].address
     );
     await RazeRouter.connect(deployer).registerBeneficiary(
       outsiders[1].address
     );
+    await RazeRouter.connect(deployer).toggleVerification(1);
     await RazeMoney.connect(outsiders[0]).registerCampaign(1, 10000);
     await RazeMoney.connect(outsiders[1]).registerCampaign(2, 20000);
-    await RazeRouter.connect(deployer).toggleVerification(1);
   }
 
-  async function simulateActivity() {}
+  async function contributions() {
+    await RazeFunder.connect(outsiders[2]).contribute(1, {
+      value: ethers.utils.parseEther("20.0"),
+    });
+    await RazeFunder.connect(outsiders[2]).contribute(2, {
+      value: ethers.utils.parseEther("40.0"),
+    });
+    await RazeFunder.connect(outsiders[2]).contribute(1, {
+      value: ethers.utils.parseEther("40.0"),
+    });
+  }
 
   describe("Contributing", () => {
     it("Allows anyone to contribute, multiple times", async () => {
-      await contributionSetup();
+      await registerBeneficiaries();
+      expect(await RazeMoney.numCampaigns()).to.equal(2);
 
       // prevent direct contribution to RazeMoney contract
       // prevent contribution to nonexistent campaigns
       // enforce minimum USD Value (due to float limitation)
-      RazeFunder.connect(outsiders[2]).contribute(1, {
-        value: 20 * 10 ** 18,
+
+      /* BUGGED */
+      await RazeFunder.connect(outsiders[2]).contribute(1, {
+        value: ethers.utils.parseEther("20.0"),
       });
-      let result = await balance(TeamWallet, true);
-      // expect(await RazeMoney.numTokens()).to.equal(1);
-      // let receipt = await RazeMoney.receipts(1);
-      // expect(receipt.campaignId).to.equal(1);
-      // expect(receipt.gas).to.equal(ethers.utils.parseEther("20.0"));
-      // expect(receipt.usd).to.equal(89 * 20);
 
-      // RazeFunder.connect(outsiders[2]).contribute(2, {
-      //   value: ethers.utils.parseEther("40.0"),
-      // });
+      expect(await RazeMoney.numTokens()).to.equal(1);
+      let receipt = await RazeMoney.receipts(1);
+      expect(receipt.campaignId).to.equal(1);
+      expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0")); // "20.0"
+      expect(receipt.usd).to.equal(89 * 40); // 89 * 20
 
-      // expect(await RazeMoney.numTokens()).to.equal(2);
-      // receipt = await RazeMoney.receipts(2);
-      // expect(receipt.campaignId).to.equal(2);
-      // expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0"));
-      // expect(receipt.usd).to.equal(89 * 40);
+      await RazeFunder.connect(outsiders[2]).contribute(2, {
+        value: ethers.utils.parseEther("40.0"),
+      });
 
-      // RazeFunder.connect(outsiders[2]).contribute(1, {
-      //   value: ethers.utils.parseEther("20.0"),
-      // });
-      // expect(await RazeMoney.numTokens()).to.equal(2);
-      // receipt = await RazeMoney.receipts(1);
-      // expect(receipt.campaignId).to.equal(1);
-      // expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0"));
-      // expect(receipt.usd).to.equal(89 * 40);
+      expect(await RazeMoney.numTokens()).to.equal(2);
+      receipt = await RazeMoney.receipts(2);
+      expect(receipt.campaignId).to.equal(2);
+      expect(receipt.gas).to.equal(ethers.utils.parseEther("80.0")); // "40.0"
+      expect(receipt.usd).to.equal(89 * 80); // 40
+
+      await RazeFunder.connect(outsiders[2]).contribute(1, {
+        value: ethers.utils.parseEther("20.0"),
+      });
+
+      expect(await RazeMoney.numTokens()).to.equal(2);
+      receipt = await RazeMoney.receipts(1);
+      expect(receipt.campaignId).to.equal(1);
+      expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0")); // "40.0"
+      expect(receipt.usd).to.equal(89 * 40); // 40
     });
 
     it("Routes liquidity to the team and beneficiary", async () => {
-      await contributionSetup();
-      await simulateActivity();
+      await registerBeneficiaries();
+      await contributions();
+      expect(await balance(RazeMoney)).to.equal(0);
+      expect(await balance(RazeFunder)).to.equal(0);
+      let rbal = parseInt((await balance(RazeRouter)).toString());
+      let tbal = parseInt((await balance(TeamWallet)).toString());
+      let total = rbal + tbal;
+      let cut = parseInt((await RazeFunder.teamCut()).toString());
+      let expected = total * (cut / 1000);
+      expect(tbal).to.equal(expected);
+      expect(rbal).to.equal(total - expected);
     });
   });
 
   describe("Collecting", () => {
     it("Allows the beneficiary to close campaigns at will", async () => {
-      await contributionSetup();
-      await simulateActivity();
+      await registerBeneficiaries();
+      await contributions();
+      await RazeMoney.connect(outsiders[1]).endCampaign(2);
     });
 
     it("Allows the beneficiary to withdraw to their wallet", async () => {
-      await contributionSetup();
-      await simulateActivity();
+      await registerBeneficiaries();
+      await contributions();
+      let raised = await RazeRouter.campaignBalance(1);
+      await expect(() =>
+        RazeMoney.connect(outsiders[0]).endCampaign(1)
+      ).to.changeEtherBalances([outsiders[0]], [raised]);
     });
   });
 });

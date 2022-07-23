@@ -72,7 +72,7 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     }
 
     // ties tokens to Receipt data structure
-    mapping(uint => Receipt) private receipts;
+    mapping(uint => Receipt) public receipts;
     uint public numTokens;
 
     // returns all NFTs owned by contributor

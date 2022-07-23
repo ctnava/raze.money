@@ -29,7 +29,7 @@ contract RazeFunder is Ownable, IRazeFunder {
 		pennies = _tp(amount);
     }
 
-	function _tp(uint amount) internal view returns (uint pennies) {
+	function _tp(uint amount) internal view returns(uint pennies) {
 		AggregatorV3Interface pricefeed = AggregatorV3Interface(oracle);
         (,int priceInt,,,) = pricefeed.latestRoundData();
         uint price = uint(priceInt);
