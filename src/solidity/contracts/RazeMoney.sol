@@ -32,7 +32,7 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
 
     // displays how many pennies have been accrued (truncated to the nearest whole)
 	function accruedAmount(uint campaignId) public view override returns(uint pennies) {
-        uint amount = IRazeFunder(minter).toPennies(campaigns[campaignId].goal);
+        uint amount = IRazeFunder(minter).toPennies(campaigns[campaignId].state);
         pennies = amount / (10**8);
     }
 
@@ -135,7 +135,7 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
         numTokens++;
         tokenId = numTokens;
         _mint(contributor, tokenId);
-        receipts[tokenId] = Receipt(campaignId, usd, gas);
+        receipts[tokenId] = Receipt(campaignId, 0, 0);
 
         updateReceipt(tokenId, usd, gas);
     }

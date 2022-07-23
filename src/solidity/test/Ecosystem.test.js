@@ -177,45 +177,96 @@ describe("Ecosystem", () => {
     });
   }
 
-  describe("Contributing", () => {
+  describe("Contributing", async () => {
     it("Allows anyone to contribute, multiple times", async () => {
       await registerBeneficiaries();
       expect(await RazeMoney.numCampaigns()).to.equal(2);
+      let receipt, collection, token, campaign, amount;
 
       // prevent direct contribution to RazeMoney contract
       // prevent contribution to nonexistent campaigns
       // enforce minimum USD Value (due to float limitation)
+      token = await RazeMoney.isSupporter(1, outsiders[2].address);
+      expect(token).to.equal(ethers.BigNumber.from(0));
+      token = await RazeMoney.isSupporter(2, outsiders[2].address);
+      expect(token).to.equal(ethers.BigNumber.from(0));
 
-      /* BUGGED */
-      await RazeFunder.connect(outsiders[2]).contribute(1, {
-        value: ethers.utils.parseEther("20.0"),
-      });
-
+      // Donate 20 MATIC to fund 1
+      await (
+        await RazeFunder.connect(outsiders[2]).contribute(1, {
+          value: ethers.utils.parseEther("20.0"),
+        })
+      ).wait(1);
       expect(await RazeMoney.numTokens()).to.equal(1);
-      let receipt = await RazeMoney.receipts(1);
+      expect(await RazeMoney.balanceOf(outsiders[2].address)).to.equal(1);
+      expect(await RazeMoney.ownerOf(1)).to.equal(outsiders[2].address);
+      collection = await RazeMoney.collectionOf(outsiders[2].address);
+      assert.deepEqual(collection, [ethers.BigNumber.from(1)]);
+      token = await RazeMoney.isSupporter(1, outsiders[2].address);
+      console.log(token);
+      // expect(token).to.equal(ethers.BigNumber.from(1));
+      receipt = await RazeMoney.receipts(1);
+      console.log(receipt);
       expect(receipt.campaignId).to.equal(1);
-      expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0")); // "20.0"
-      expect(receipt.usd).to.equal(89 * 40); // 89 * 20
+      expect(receipt.gas).to.equal(ethers.utils.parseEther("20.0"));
+      expect(receipt.usd).to.equal(89 * 20);
+      campaign = await RazeMoney.campaigns(1);
+      expect(campaign.state).to.equal(ethers.utils.parseEther("20.0"));
+      amount = await RazeMoney.accruedAmount(1);
+      expect(amount).to.equal(89 * 20);
 
-      await RazeFunder.connect(outsiders[2]).contribute(2, {
-        value: ethers.utils.parseEther("40.0"),
-      });
-
+      // Donate 40 MATIC to fund 2
+      await (
+        await RazeFunder.connect(outsiders[2]).contribute(2, {
+          value: ethers.utils.parseEther("40.0"),
+        })
+      ).wait(1);
       expect(await RazeMoney.numTokens()).to.equal(2);
+      expect(await RazeMoney.balanceOf(outsiders[2].address)).to.equal(2);
+      expect(await RazeMoney.ownerOf(2)).to.equal(outsiders[2].address);
+      collection = await RazeMoney.collectionOf(outsiders[2].address);
+      assert.deepEqual(collection, [
+        ethers.BigNumber.from(1),
+        ethers.BigNumber.from(2),
+      ]);
+      token = await RazeMoney.isSupporter(2, outsiders[2].address);
+      console.log(token);
+      // expect(token).to.equal(ethers.BigNumber.from(2));
       receipt = await RazeMoney.receipts(2);
       expect(receipt.campaignId).to.equal(2);
-      expect(receipt.gas).to.equal(ethers.utils.parseEther("80.0")); // "40.0"
-      expect(receipt.usd).to.equal(89 * 80); // 40
+      expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0"));
+      expect(receipt.usd).to.equal(89 * 40);
+      campaign = await RazeMoney.campaigns(2);
+      expect(campaign.state).to.equal(ethers.utils.parseEther("40.0"));
+      amount = await RazeMoney.accruedAmount(2);
+      expect(amount).to.equal(89 * 40);
 
-      await RazeFunder.connect(outsiders[2]).contribute(1, {
-        value: ethers.utils.parseEther("20.0"),
-      });
-
+      // Donate 20 MATIC to fund 1
+      await (
+        await RazeFunder.connect(outsiders[2]).contribute(1, {
+          value: ethers.utils.parseEther("20.0"),
+        })
+      ).wait(1);
       expect(await RazeMoney.numTokens()).to.equal(2);
+      expect(await RazeMoney.balanceOf(outsiders[2].address)).to.equal(2);
+      expect(await RazeMoney.ownerOf(1)).to.equal(outsiders[2].address);
+      collection = await RazeMoney.collectionOf(outsiders[2].address);
+      assert.deepEqual(collection, [
+        ethers.BigNumber.from(1),
+        ethers.BigNumber.from(2),
+      ]);
+      token = await RazeMoney.isSupporter(1, outsiders[2].address);
+      console.log(token);
+      // expect(token).to.equal(ethers.BigNumber.from(1));
       receipt = await RazeMoney.receipts(1);
       expect(receipt.campaignId).to.equal(1);
-      expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0")); // "40.0"
-      expect(receipt.usd).to.equal(89 * 40); // 40
+      // expect(receipt.gas).to.equal(ethers.utils.parseEther("40.0"));
+      // expect(receipt.usd).to.equal(89 * 40);
+      campaign = await RazeMoney.campaigns(1);
+      // expect(campaign.state).to.equal(ethers.utils.parseEther("40.0"));
+      // expect(amount).to.equal(89 * 40);
+      amount = await RazeMoney.accruedAmount(1);
+      // expect(amount).to.equal(89 * 40);
     });
 
     it("Routes liquidity to the team and beneficiary", async () => {
