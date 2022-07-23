@@ -1,7 +1,6 @@
 require("dotenv").config();
 const fs = require("fs");
 require("@nomicfoundation/hardhat-toolbox");
-require("@nomicfoundation/hardhat-chai-matchers");
 
 const mNodeKey = process.env.MORALIS_KEY;
 const aMNodeKey = process.env.ALCHEMY_OPTM_KEY;

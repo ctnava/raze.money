@@ -69,6 +69,10 @@ describe("TeamWallet", () => {
       //   await expect(
       //     await TeamWallet.connect(outsiders[0]).propose(outsiders[0].address, 2)
       //   ).to.be.revertedWith("Members Only");
+
+      await expect(
+        await TeamWallet.connect(outsiders[0]).propose(outsiders[0].address, 2)
+      ).to.be.revertedWith("Members Only");
     });
 
     it("should have voting", async () => {
