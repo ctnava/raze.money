@@ -26,7 +26,7 @@ contract RazeRouter is Ownable, ERC721, IRazeRouter {
     function toggleVerification(uint id) public override onlyOwner { verified[id] = !verified[id]; }
     mapping(uint => uint) public campaignBalance;
     mapping(uint => bool) public verified;
-    uint numBeneficiaries;
+    uint public numBeneficiaries;
 
     // need mint functions
     function registerBeneficiary(address beneficiary) public override onlyOwner {
@@ -41,11 +41,14 @@ contract RazeRouter is Ownable, ERC721, IRazeRouter {
 
     function deposit(uint campaignId) public payable override {
         require(msg.sender == minter, "Minter Only");
+        // valid campaign
+        
         campaignBalance[campaignId] += msg.value;
     }
 
     function liquidateCampaign(uint campaignId, address recipient) public override {
         require(msg.sender == records, "Records Only");
+        // valid campaign 
 
         uint amount = campaignBalance[campaignId];
         payable(recipient).transfer(amount);

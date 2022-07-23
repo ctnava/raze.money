@@ -27,7 +27,7 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     modifier MinterOnly() { require(msg.sender == router, "Minter Only");_; }
 
     // contains a record of campaigns to contribute towards
-    mapping(uint => Campaign) private campaigns;
+    mapping(uint => Campaign) public campaigns;
     uint public numCampaigns;
 
     // displays how many pennies have been accrued (truncated to the nearest whole)

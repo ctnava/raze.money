@@ -22,7 +22,7 @@ contract RazeFunder is Ownable, IRazeFunder {
 	constructor() {}
 
 	// plan to reduce this to 0.1% as the project grows
-	uint teamCut = 10; // 1% === 10/1000
+	uint public teamCut = 10; // 1% === 10/1000
 
 	function toPennies(uint amount) public view override returns(uint pennies) {
         require(msg.sender == records, "Not Authorized");

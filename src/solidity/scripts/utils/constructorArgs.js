@@ -4,8 +4,8 @@ const constructorArgs = {
   ],
   TeamWallet: ["L3gendary DAO - RAZE Wallet", "L3-RAZE"],
   PolygonLinkSim: [],
-  RazeRouter: ["https://api.raze.money/tokens/"],
-  RazeMoney: ["https://api.raze.money/tokens/"],
+  RazeRouter: ["https://api.raze.money/router/tokens/"],
+  RazeMoney: ["https://api.raze.money/records/tokens/"],
   RazeFunder: [],
 };
 
