@@ -26,7 +26,7 @@ contract TeamWallet is ERC721 {
         bool executed;
     }
     mapping(uint => Proposal) public proposals;
-    uint numProposals;
+    uint public numProposals;
 
     function votes(uint proposalId) public view returns(bool[] memory result) { return proposals[proposalId].votes; }
 
@@ -56,6 +56,8 @@ contract TeamWallet is ERC721 {
         
         bool sent = destination.send(proposal.amount);
         require(sent, "Failed to send Ether");
+        
+        proposals[proposalId].executed = true;
     }
 
     receive() external payable {}
