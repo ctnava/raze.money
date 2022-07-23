@@ -91,7 +91,7 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     function isSupporter(uint campaignId, address contributor) public view override returns(uint tokenId) {
         uint[] memory collection = collectionOf(contributor);
         for(uint i = 0; i < collection.length; i++) {
-            if(receipts[i].campaignId == campaignId) { 
+            if(receipts[collection[i]].campaignId == campaignId) { 
                 tokenId = collection[i]; 
             }  
         } 
