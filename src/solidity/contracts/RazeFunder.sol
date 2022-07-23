@@ -26,15 +26,19 @@ contract RazeFunder is Ownable, IRazeFunder {
 
 	function toPennies(uint amount) public view override returns(uint pennies) {
         require(msg.sender == records, "Not Authorized");
+		pennies = _tp(amount);
+    }
+
+	function _tp(uint amount) internal view returns (uint pennies) {
 		AggregatorV3Interface pricefeed = AggregatorV3Interface(oracle);
         (,int priceInt,,,) = pricefeed.latestRoundData();
         uint price = uint(priceInt);
         uint raw = amount * price;
         pennies = raw / (10**16);
-    }
+	}
 	
 	function contribute(uint campaignId) public payable override {
-		uint penniesUsd = toPennies(msg.value) / (10**8);
+		uint penniesUsd = _tp(msg.value) / (10**8);
 		
 		// minimum contribution $10
 		require(penniesUsd >= 1000, "Contribution <$10");

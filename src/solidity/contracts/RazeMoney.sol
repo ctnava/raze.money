@@ -24,7 +24,7 @@ contract RazeMoney is Ownable, ERC721, IRazeMoney {
     }
 
     modifier RouterOnly() { require(msg.sender == router, "Router Only");_; }
-    modifier MinterOnly() { require(msg.sender == router, "Minter Only");_; }
+    modifier MinterOnly() { require(msg.sender == minter, "Minter Only");_; }
 
     // contains a record of campaigns to contribute towards
     mapping(uint => Campaign) public campaigns;

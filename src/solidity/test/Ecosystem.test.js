@@ -172,7 +172,7 @@ describe("Ecosystem", () => {
       // prevent contribution to nonexistent campaigns
       // enforce minimum USD Value (due to float limitation)
       RazeFunder.connect(outsiders[2]).contribute(1, {
-        value: ethers.utils.parseEther("20.0"),
+        value: 20 * 10 ** 18,
       });
       let result = await balance(TeamWallet, true);
       // expect(await RazeMoney.numTokens()).to.equal(1);
