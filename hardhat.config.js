@@ -59,7 +59,6 @@ const bank = fs.readFileSync("./data/testnetBank.json");
 const testnetAccounts = JSON.parse(bank).privateKeys;
 
 module.exports = {
-  defaultNetwork: "localhost",
   networks: {
     ethereum: {
       url: getProvider(1),

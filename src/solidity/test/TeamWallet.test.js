@@ -1,4 +1,9 @@
 /* eslint-disable jest/valid-expect */
+const {
+  time,
+  loadFixture,
+} = require("@nomicfoundation/hardhat-network-helpers");
+const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { assert, expect } = require("chai");
 
 const { constructorArgs } = require("../scripts/utils/constructorArgs");
@@ -66,9 +71,9 @@ describe("TeamWallet", () => {
       }
 
       //    PASSES
-      //   await expect(
-      //     await TeamWallet.connect(outsiders[0]).propose(outsiders[0].address, 2)
-      //   ).to.be.revertedWith("Members Only");
+      await expect(
+        TeamWallet.connect(outsiders[0]).propose(outsiders[0].address, 2)
+      ).to.be.revertedWith("Members Only");
     });
 
     it("should have voting", async () => {
@@ -89,14 +94,14 @@ describe("TeamWallet", () => {
       }
 
       //    PASSES
-      //   await expect(
-      //     await TeamWallet.connect(members[0]).voteToggle(2, 2)
-      //   ).to.be.revertedWith("Invalid Member ID");
+      await expect(
+        TeamWallet.connect(members[0]).voteToggle(2, 2)
+      ).to.be.revertedWith("Invalid Member ID");
 
       //    PASSES
-      //   await expect(
-      //     await TeamWallet.connect(outsiders[0]).voteToggle(2, 2)
-      //   ).to.be.revertedWith("Members Only");
+      await expect(
+        TeamWallet.connect(outsiders[0]).voteToggle(2, 2)
+      ).to.be.revertedWith("Members Only");
     });
 
     it("should allow anyone to execute", async () => {
@@ -114,9 +119,9 @@ describe("TeamWallet", () => {
       let bal;
 
       //    PASSES
-      //   await expect(
-      //     await TeamWallet.connect(outsiders[0]).execute(1)
-      //   ).to.be.revertedWith("Failed to send Ether");
+      await expect(
+        TeamWallet.connect(outsiders[0]).execute(1)
+      ).to.be.revertedWith("Failed to send Ether");
 
       await outsiders[0].sendTransaction({ to: TeamWallet.address, value: 5 });
       await TeamWallet.connect(members[1]).execute(1);
@@ -129,14 +134,14 @@ describe("TeamWallet", () => {
       expect(await balance(TeamWallet)).to.equal(3);
 
       //    PASSES
-      //   await expect(
-      //     await TeamWallet.connect(outsiders[0]).execute(1)
-      //   ).to.be.revertedWith("Expired Proposal");
+      await expect(
+        TeamWallet.connect(outsiders[0]).execute(1)
+      ).to.be.revertedWith("Expired Proposal");
 
       //    PASSES
-      //   await expect(
-      //     await TeamWallet.connect(outsiders[0]).execute(3)
-      //   ).to.be.revertedWith("Not Passed");
+      await expect(
+        TeamWallet.connect(outsiders[0]).execute(3)
+      ).to.be.revertedWith("Not Passed");
     });
   });
 });
