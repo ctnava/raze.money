@@ -1,0 +1,88 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# heroku
+/heroku
+
+# common
+/*.env
+/.DS_Store
+/*.code-workspace
+/node_modules
+/package-lock.json
+/npm-debug.log*
+/yarn.lock
+/yarn-debug.log*
+/yarn-error.log*
+/.pnp
+/.pnp.js
+src/solidity/*.env
+src/solidity/.DS_Store
+src/solidity/*.code-workspace
+src/solidity/node_modules
+src/solidity/package-lock.json
+src/solidity/npm-debug.log*
+src/solidity/yarn.lock
+src/solidity/yarn-debug.log*
+src/solidity/yarn-error.log*
+src/solidity/.pnp
+src/solidity/.pnp.js
+src/client/*.env
+src/client/.DS_Store
+src/client/*.code-workspace
+src/client/node_modules
+src/client/package-lock.json
+src/client/npm-debug.log*
+src/client/yarn.lock
+src/client/yarn-debug.log*
+src/client/yarn-error.log*
+src/client/.pnp
+src/client/.pnp.js
+src/api/*.env
+src/api/.DS_Store
+src/api/*.code-workspace
+src/api/node_modules
+src/api/package-lock.json
+src/api/npm-debug.log*
+src/api/yarn.lock
+src/api/yarn-debug.log*
+src/api/yarn-error.log*
+src/api/.pnp
+src/api/.pnp.js
+
+
+# devNet
+/data/1337
+/data/31337
+src/solidity/data/1337
+src/solidity/data/31337
+src/client/src/data/31337
+src/client/src/data/1337
+src/api/data/31337
+src/api/data/1337
+
+
+# client
+/build
+src/client/build
+
+
+# typechain
+/typechain
+src/solidity/typechain
+
+
+# api
+temp
+src/api/temp
+
+
+# solidity only
+src/solidity/artifacts
+src/solidity/cache
+src/solidity/coverage
+src/solidity/coverage.json
+
+
+bin/git/remote/add.ps1
+
+data/testnetBank.json
