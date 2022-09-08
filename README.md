@@ -14,7 +14,7 @@ for more details, refer to readme files in the individual project "root" folders
 ### Mandatory .env values
 ```
 # Client
-API_URL=https://deaddrop-api-alpha.herokuapp.com/
+API_URL=https://api.legendary.lgbt/
 
 
 # IPFS @ https://infura.io/
