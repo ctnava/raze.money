@@ -59,6 +59,10 @@ const bank = fs.readFileSync("./data/testnetBank.json");
 const testnetAccounts = JSON.parse(bank).privateKeys;
 
 module.exports = {
+  gasReporter: {
+    currency: "USD",
+    coinmarketcap: process.env.CMC_API_KEY,
+  },
   networks: {
     ethereum: {
       url: getProvider(1),
@@ -147,6 +151,4 @@ module.exports = {
     cache: "./src/solidity/cache",
     artifacts: "./src/solidity/artifacts",
   },
-
-  mocha: { timeout: 40000 },
 };
